@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1527934378 source:/Users/keinlbc/projects/fmi/oop/db/main.cpp
+	<iostream>
+	"ColInt.h"
+
+1527935429 /Users/keinlbc/projects/fmi/oop/db/ColInt.h
+	"column.h"
+
+1527935422 /Users/keinlbc/projects/fmi/oop/db/column.h
+
