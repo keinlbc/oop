@@ -26,6 +26,9 @@ public:
 	bool addColumn(ColumnBase col);
 	std::string getName();
 
+	Row* getRows();
 
+    void serialize();
+    void deserialize();
 
 };

@@ -1,16 +1,18 @@
 #pragma once
 #include "Column.h"
 
-class ColInt: public Column<int>{
+class ColString: public Column<int>{
 
 protected:
-     int value;
+     char* value;
 public:
 
-    ColInt(){
-        this->type = ColumnBase::TYPE_INT;
+    ColChar(){
+        this->type = ColumnBase::TYPE_STRING;
     };
-    virtual ~ColInt(){}
+    virtual ~ColChar(){
+        delete[] this->value;
+    }
 
     int getValue(){
         return this->value;
@@ -24,3 +26,5 @@ public:
 
 
 };
+
+

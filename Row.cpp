@@ -73,3 +73,6 @@ bool Row::addColumn(ColumnBase column)
 	return true;
 }
 
+Row::ColumnBase* getColumns(){
+    return this->columns;
+};

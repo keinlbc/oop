@@ -19,5 +19,6 @@ public:
 	~Row();
 	bool addColumn(ColumnBase col);
 
+    ColumnBase* getColumns();
 
 };

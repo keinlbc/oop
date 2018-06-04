@@ -1,16 +1,16 @@
 #pragma once
 #include "Column.h"
 
-class ColInt: public Column<int>{
+class ColFloat: public Column<int>{
 
 protected:
-     int value;
+     float value;
 public:
 
-    ColInt(){
-        this->type = ColumnBase::TYPE_INT;
+    ColFloat(){
+        this->type = ColumnBase::TYPE_FLOAT;
     };
-    virtual ~ColInt(){}
+    virtual ~ColFloat(){}
 
     int getValue(){
         return this->value;
@@ -24,3 +24,4 @@ public:
 
 
 };
+
