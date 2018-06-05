@@ -24,30 +24,34 @@ public:
     void setValue(char* value){
 
 
-          delete[] this->value;
+      delete[] this->value;
 
-          if(value == NULL)
-          {
-            this->value = NULL;
-            return;
-          }
+      if(value == NULL)
+      {
+        this->value = NULL;
+        return;
+      }
 
-        int n = strlen(value);
-        this->value = new char[n+1];
-        strcpy(this->value,value);
+      int n = strlen(value);
+      this->value = new char[n+1];
+      strcpy(this->value,value);
 
     }
 
-         void fromString(const std::string& raw){
-           char* temp = new char[raw.size()+1];
-           strcpy(temp,raw.c_str());
-            this->value = temp;
-         }
+   void fromString(const std::string& raw){
+     char* temp = new char[raw.size()+1];
+     strcpy(temp,raw.c_str());
+      this->value = temp;
+   }
 
-         std::string toString() const{
-            return std::string(this->value);
-         }
+   std::string toString() const{
+      return std::string(this->value);
+   }
 
+   bool Column::operator==(const Column& column)
+   {
+      return strcmp(this->value, column.getValue()) && this->type == column->getType();
+   }
 
 
 };

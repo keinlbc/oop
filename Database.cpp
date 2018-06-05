@@ -22,7 +22,7 @@ Table& Database::getTable(char* tablename)const
 	int index=0;
 	if(!isTable(tablename,index))
 	{
-		
+
 	}else
 	{
 		return tables[index];
@@ -65,3 +65,5 @@ void Database::showTables()const
 	for(int i=0; i<tableCount;i++)
 		cout<<this->tables[i].getName()<<std::endl;
 }
+
+

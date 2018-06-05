@@ -74,4 +74,10 @@ public:
 
     }
 
+    virtual bool Column::operator==(const Column& column)
+    {
+
+        return this->value == column.getValue() && this->type == column.getType();
+    }
+
 } ;

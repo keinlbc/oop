@@ -1,4 +1,3 @@
-
 #include "CLI.h"
 
 void CLI::closeCli()
@@ -83,7 +82,9 @@ void CLI::printexComBranch(int command)
 			int x=0;
 			if(db->isTable(tablename,x))
 			{
+
 				Table& table = this->db->getTable(tablename);
+				std::cout << "saving " << table.getName() << std::endl;
 				table.serialize();
 			}
 			delete [] tablename;
@@ -170,9 +171,15 @@ void CLI::printexComBranch(int command)
 		case 10:
 		{
 			std::cout<<"Parameters needed: (1)tablename "<<std::endl;
-			char* tablename = new char[32];
+			char* tablename= new char[32];
 			std::cin>>tablename;
-			//exec func
+			int x=0;
+			if(db->isTable(tablename,x))
+			{
+
+				Table& table = this->db->getTable(tablename);
+				table.rowFactory();
+			}
 			delete [] tablename;
 			break;
 		}

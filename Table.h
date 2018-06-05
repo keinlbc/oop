@@ -35,6 +35,7 @@ public:
     void setName(const std::string&);
 
 	RowNode* getRowIterator();
+	void rowFactory();
     void addRow(ColumnBase**);
 
     void updateSchema(int);
