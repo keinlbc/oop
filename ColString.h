@@ -1,30 +1,53 @@
 #pragma once
 #include "Column.h"
+#include<string.h>
 
-class ColString: public Column<int>{
+using namespace std;
+
+class ColString: public Column<char* >{
 
 protected:
-     char* value;
+
 public:
 
-    ColChar(){
-        this->type = ColumnBase::TYPE_STRING;
-    };
-    virtual ~ColChar(){
-        delete[] this->value;
+    ColString():Column<char*>(ColumnBase::TYPE_STRING){this->value = NULL;}
+
+    virtual ~ColString(){
+      delete[] this->value;
     }
 
-    int getValue(){
+    char* getValue(){
         return this->value;
-    };
+    }
 
 
-    void setValue(int value){
-        this->value = value;
-    };
+    void setValue(char* value){
+
+
+          delete[] this->value;
+
+          if(value == NULL)
+          {
+            this->value = NULL;
+            return;
+          }
+
+        int n = strlen(value);
+        this->value = new char[n+1];
+        strcpy(this->value,value);
+
+    }
+
+         void fromString(const std::string& raw){
+           char* temp = new char[raw.size()+1];
+           strcpy(temp,raw.c_str());
+            this->value = temp;
+         }
+
+         std::string toString() const{
+            return std::string(this->value);
+         }
 
 
 
 };
-
-

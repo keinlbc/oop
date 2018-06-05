@@ -1,24 +1,23 @@
 #include <iostream>
-#include "Table.h"
-#include "ColInt.h"
+#include "Row.h"
+#include "CLI.h"
 using namespace std;
-
 
 
 
 int main()
 {
+ CLI cli;
 
-
-    ColInt c;
-
-
-    //ColFloat f;
-    c.setValue(23);
-
-    Table t;
-    t.addColumn(c);
-    cout << "alabala" << endl;
-    cout << c.getValue() << endl;
-    return 0;
+std::cout << "fdasfasd" << std::endl;
+while(cli.getState()==true)
+{
+	cli.printMenu();
+	int command;
+	cin>>command;
+	cli.printexComBranch(command);
 }
+
+
+}
+	

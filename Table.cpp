@@ -1,42 +1,141 @@
 #include "Table.h"
+#include <string>
+#include <fstream>
+using namespace std;
+
+
+  void Table::addRow(ColumnBase** data)
+	{
+		Row newRow;
+
+		for(int i=0;i<schemaSize;i++)
+			newRow.addColumn(data[i]);
+
+		RowNode* newNode = new RowNode();
+		newNode->next = this->top;
+		newNode->data = newRow;
+		this->top = newNode;
+
+	}
+std::string Table::getName() const
+{
+	return this->name;
+}
+
+
+void Table::serialize()
+{
+
+	string path = "./DB";
+	std::ofstream shandle (path + "/"+ this->getName()+".schema", std::ofstream::out);
+	std::ofstream dhandle (path +"/"+this->getName()+".data", std::ofstream::out);
+
+for(int i=0;i<this->schemaSize;i++)
+	shandle<<this->schema[i]<<" ";
+
+	RowNode* temp = this->top;
+	while(temp)
+	{
+		ColumnBase** data = temp->data.getColumns();
+
+		for(int i =0;i<this->schemaSize;i++)
+		{
+			if(data[i])
+			dhandle<<data[i]->serialize()<<std::endl;
+			else dhandle<<schema[i]<<":"<<0<<":"<< std::endl;
+		}
+
+
+		temp = temp->next;
+	}
+
+    shandle.close();
+	dhandle.close();
+
+	std::cout << "db and schema was saved" << std::endl;
+
+}
+void Table::deserialize()
+{
+
+	destroy(); //make sure table doesn't exist
+
+string path = "./DB";
+std::ifstream shandle (path+"/"+this->getName()+".schema",std::ifstream::in);
+std::ifstream dhandle (path+"/"+this->getName()+".data",std::ifstream::in);
+
+while(!shandle.eof())
+{
+	int entry;
+	shandle>>entry;
+	updateSchema(entry);
+}
+
+
+
+shandle.close();
+dhandle.close();
+
+}
+void Table::setName(const std::string& name)
+{
+	this->name = name;
+}
 
 Table::Table()
 {
 	this->schema = NULL;
 	this->schemaSize = 0;
 
-
-	this->rows = NULL;
-	this->count = 0;
-	this->capacity = 1;
 }
 
 Table& Table::operator= (const Table& table)
 {
-	if(this != &table)
-	{
-		destroy();
 		copy(table);
-	}
+
 	return *this;
 }
 
 void Table::copy(const Table& table)
 {
-	this->rows = new Row[table.capacity];
+	if(this == &table)return;
+	destroy();
 
-	for(size_t i = 0; i < table.count; ++i)
-	{
-		this->rows[i] = table.rows[i];
+	this->setName(table.getName()+"_copy");
+	this->schema = new int[table.schemaSize];
+	this->schemaSize = table.schemaSize;
+	for(int i=0;i<schemaSize;i++)
+	schema[i] = table.schema[i];
+
+	RowNode* top_node = table.top;
+	RowNode** cursor = &this->top;
+
+	while(top_node){
+
+	 (*cursor) = new RowNode();
+	 (*cursor)->data = top_node->data;
+		cursor = &((*cursor)->next);
+
+		(*cursor)->data = top_node->data;
+
+		top_node = top_node->next;
 	}
-	this->capacity = table.capacity;
-	this->count = table.count;
+
+
 }
 
 void Table::destroy()
 {
-	delete[] this->rows;
-	delete[] this->schema;
+	RowNode* temp = NULL;
+	while(this->top)
+	{
+		temp = this->top->next;
+		delete this->top;
+		this->top = temp;
+	}
+
+	delete[] schema;
+
 }
 
 Table::~Table(){
@@ -48,43 +147,73 @@ Table::Table(const Table& table)
 	copy(table);
 }
 
+  void Table::updateSchema(int entry)
+	{
+		int* temp = new int[this->schemaSize + 1];
+
+		for(size_t i=0; i<this->schemaSize; i++){
+
+			temp[i] = this->schema[i];
+		}
+		temp[this->schemaSize++] =entry;
+
+		delete[] this->schema;
+			this->schema = temp;
+	}
 
 
-
-bool Table::addColumn(ColumnBase column)
+void Table::addColumn(int type)
 {
 
+	updateSchema(type);
 
-	int* temp = new int[this->schemaSize + 1];
+	RowNode* cursor = this->top;
 
-	for(size_t i=0; i<this->schemaSize; i++){
+	while(cursor)
+	{
 
-		temp[i] = this->schema[i];
+			cursor->data.addColumn(NULL);
+
+			cursor = cursor->next;
 	}
-	temp[this->schemaSize++] = column.getType();
 
-	delete[] this->schema;
-	this->schema = temp;
 
-	//now add the column to all existing rows
-    for(size_t i=0; i<this->count; i++){
-
-        this->rows[i].addColumn(column);
-	}
-	return true;
 }
 
-void Table::resize()
-{
-	Row* temp = new Row[this->capacity*2];
-	for(size_t i = 0; i < this->capacity; ++i)
+
+  int* Table::getSchema() const
 	{
-		temp[i] = this->rows[i];
+		return this->schema;
+	}
+  int Table::getSchemaSize() const
+	{
+		return this->schemaSize;
+	}
+const string Table::getInfo() const{
+
+string out = "";
+for(int i=0;i<this->schemaSize;i++)
+{
+
+	switch(this->schema[i])
+	{
+		case ColumnBase::TYPE_INT:
+		out+= "INTEGER |";
+		break;
+
+		case ColumnBase::TYPE_FLOAT:
+		out+= "FLOAT |";
+		break;
+
+		case ColumnBase::TYPE_STRING:
+		out+= "STRING |";
+		break;
+		default: out+= "UNKNOWN |";
+
 	}
 
-	delete [] this->rows;
-	this->rows = temp;
-	this->capacity *=2;
+}
 
 
+return out;
 }

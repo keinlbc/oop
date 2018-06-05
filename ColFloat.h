@@ -1,27 +1,33 @@
 #pragma once
 #include "Column.h"
 
-class ColFloat: public Column<int>{
+using namespace std;
+
+class ColFloat: public Column<float>{
 
 protected:
-     float value;
+
 public:
 
-    ColFloat(){
-        this->type = ColumnBase::TYPE_FLOAT;
-    };
+    ColFloat():Column<float>(ColumnBase::TYPE_FLOAT) {}
     virtual ~ColFloat(){}
 
-    int getValue(){
+    float getValue(){
         return this->value;
-    };
+    }
 
 
-    void setValue(int value){
+    void setValue(float value){
         this->value = value;
-    };
+    }
 
+     void fromString(const std::string& raw){
+        this->setValue(atof(raw.c_str()));
+     }
+
+     std::string toString() const{
+        return std::to_string(this->value);
+     }
 
 
 };
-

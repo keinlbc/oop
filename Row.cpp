@@ -3,13 +3,17 @@
 
 Row::Row()
 {
-	this->columns = NULL;
+	this->columns = new ColumnBase*[1];
 	this->count = 0;
 	this->capacity = 1;
 }
 void Row::destroy()
 {
-	delete [] this->columns;
+	for(int i=0;i<count;i++)
+	{
+		delete columns[i];
+	}
+	delete[] columns;
 }
 
 Row::Row(const Row& row)
@@ -20,6 +24,7 @@ Row::Row(const Row& row)
 Row::~Row(){
     destroy();
 }
+
 Row& Row::operator= (const Row& row)
 {
 	if(this != &row)
@@ -31,11 +36,11 @@ Row& Row::operator= (const Row& row)
 }
 void Row::copy(const Row& row)
 {
-	this->columns = new ColumnBase[row.capacity];
+	this->columns = new ColumnBase*[row.capacity];
 
 	for(size_t i = 0; i < row.count; ++i)
 	{
-		this->columns[i] = row.columns[i];
+		this->columns[i] =  Row::createCopy(row.columns[i]);
 	}
 	this->capacity = row.capacity;
 	this->count = row.count;
@@ -47,20 +52,21 @@ void Row::copy(const Row& row)
 
 void Row::resize()
 {
-	ColumnBase* temp = new ColumnBase[this->capacity*2];
+	ColumnBase** temp = new ColumnBase*[this->capacity*2];
 	for(size_t i = 0; i < this->capacity; ++i)
 	{
 		temp[i] = this->columns[i];
 	}
 
-	delete [] this->columns;
+	delete[] this->columns;
+
 	this->columns = temp;
 	this->capacity *=2;
 
 
 }
 
-bool Row::addColumn(ColumnBase column)
+bool Row::addColumn(const ColumnBase* column = NULL)
 {
 
 
@@ -68,11 +74,12 @@ bool Row::addColumn(ColumnBase column)
 	{
 		resize();
 	}
-
-	this->columns[count++] = column;
+if(!column)this->columns[count++] = NULL;
+else
+	this->columns[count++] = Row::createCopy(column);
 	return true;
 }
 
-Row::ColumnBase* getColumns(){
+ColumnBase** Row::getColumns(){
     return this->columns;
 };
