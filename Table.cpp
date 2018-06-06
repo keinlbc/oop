@@ -247,7 +247,7 @@ void Table::columnFactory(int type){
 	        cin >> c->setValue();
 			break;
 		}
-		return 
+		return c;
 
 }
 void Table::rowFactory(){
@@ -272,7 +272,7 @@ void Table::print(RowNode* topNode = this->top){
 	}
 	int i = 10;
 	do{
-		char* input;
+		
 		for(i=0; i<this->schemaSize; i++){
 			std::cout << "|";
 			if(topNode.data[i]){
@@ -303,6 +303,7 @@ void Table::select(int n, ColumnBase* column){
 	Table tempTable;
 	tempTable->setName(table.getName()+"_select");
 	tempTable->schema = new int[this->schemaSize];
+	tempTable->schema = this->schema;
 	tempTable->schemaSize = this->schemaSize;
 
 
@@ -339,7 +340,7 @@ void Table::update(int s_n, ColumnBase* s_column, int t_n, ColumnBase* t_column)
 void Table::delete(int n, ColumnBase* column){
 
 	RowNode* topNode;
-	topNode->next = *this->top;
+	topNode->next = this->top;
 
 	while(topNode->next){
 		
@@ -354,6 +355,9 @@ void Table::delete(int n, ColumnBase* column){
 		
 		
 	}
+
+	this->top = topNode->next;
+	delete topNode;
 
 }
 
